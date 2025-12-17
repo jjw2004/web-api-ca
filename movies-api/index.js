@@ -4,6 +4,7 @@ import './db';
 import cors from 'cors';
 import usersRouter from './api/users';
 import moviesRouter from './api/movies';
+import personsRouter from './api/persons';
 import authenticate from './authenticate';
 
 dotenv.config();
@@ -31,6 +32,9 @@ app.use('/api/users', usersRouter);
 
 //Movies router
 app.use('/api/movies', moviesRouter);
+
+//Persons router
+app.use('/api/persons', personsRouter);
 
 app.use(errHandler);
 
