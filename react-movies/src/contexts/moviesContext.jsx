@@ -1,28 +1,45 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
+import { addFavorite, removeFavorite } from "../api/tmdb-api";
+import { AuthContext } from "./authContext";
 
 export const MoviesContext = React.createContext(null);
 
 const MoviesContextProvider = (props) => {
+  const authContext = useContext(AuthContext);
   const [favorites, setFavorites] = useState( [] )
   const [myReviews, setMyReviews] = useState( {} )
   const [mustWatch, setMustWatch] = useState( [] )
 
-  const addToFavorites = (movie) => {
-    let newFavorites = [];
-    if (!favorites.includes(movie.id)){
-      newFavorites = [...favorites, movie.id];
+  const addToFavorites = async (movie) => {
+    if (!authContext.userId) return;
+    
+    try {
+      await addFavorite(authContext.userId, movie);
+      let newFavorites = [];
+      if (!favorites.includes(movie.id)){
+        newFavorites = [...favorites, movie.id];
+      }
+      else{
+        newFavorites = [...favorites];
+      }
+      setFavorites(newFavorites);
+    } catch (error) {
+      console.error("Error adding favorite:", error);
     }
-    else{
-      newFavorites = [...favorites];
-    }
-    setFavorites(newFavorites)
   };
   
   // We will use this function in the next step
-  const removeFromFavorites = (movie) => {
-    setFavorites( favorites.filter(
-      (mId) => mId !== movie.id
-    ) )
+  const removeFromFavorites = async (movie) => {
+    if (!authContext.userId) return;
+    
+    try {
+      await removeFavorite(authContext.userId, movie.id);
+      setFavorites( favorites.filter(
+        (mId) => mId !== movie.id
+      ));
+    } catch (error) {
+      console.error("Error removing favorite:", error);
+    }
   };
 
   const addReview = (movie, review) => {
