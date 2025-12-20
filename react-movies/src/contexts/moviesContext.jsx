@@ -11,6 +11,7 @@ const MoviesContextProvider = (props) => {
   const [mustWatch, setMustWatch] = useState( [] )
 
   // Load favorites and must watch from database when user logs in
+  // this fixes the issue of data not persisting across sessions
   useEffect(() => {
     const loadUserData = async () => {
       if (authContext.userId) {
