@@ -5,6 +5,7 @@ import cors from 'cors';
 import usersRouter from './api/users';
 import moviesRouter from './api/movies';
 import personsRouter from './api/persons';
+import favoritesRouter from './api/favorites';
 import authenticate from './authenticate';
 
 dotenv.config();
@@ -15,7 +16,7 @@ const errHandler = (err, req, res, next) => {
   if(process.env.NODE_ENV === 'production') {
     return res.status(500).send(`Something went wrong!`);
   }
-  res.status(500).send(`Hey!! You caught the error 👍👍. Here's the details: ${err.stack} `);
+  res.status(500).send(`Hey! You caught the error. Here's the details: ${err.stack} `);
 };
 
 const app = express();
@@ -35,6 +36,9 @@ app.use('/api/movies', moviesRouter);
 
 //Persons router
 app.use('/api/persons', personsRouter);
+
+//Favorites router
+app.use('/api/favorites', favoritesRouter);
 
 app.use(errHandler);
 
