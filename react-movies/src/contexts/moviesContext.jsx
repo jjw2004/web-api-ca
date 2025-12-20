@@ -1,5 +1,5 @@
-import React, { useState, useContext } from "react";
-import { addFavorite, removeFavorite, addMustWatch, removeMustWatch } from "../api/tmdb-api";
+import React, { useState, useContext, useEffect } from "react";
+import { addFavorite, removeFavorite, addMustWatch, removeMustWatch, getFavoriteMovies, getMustWatchMovies } from "../api/tmdb-api";
 import { AuthContext } from "./authContext";
 
 export const MoviesContext = React.createContext(null);
@@ -9,6 +9,26 @@ const MoviesContextProvider = (props) => {
   const [favorites, setFavorites] = useState( [] )
   const [myReviews, setMyReviews] = useState( {} )
   const [mustWatch, setMustWatch] = useState( [] )
+
+  // Load favorites and must watch from database when user logs in
+  useEffect(() => {
+    const loadUserData = async () => {
+      if (authContext.userId) {
+        try {
+          const favoritesData = await getFavoriteMovies(authContext.userId);
+          const favoriteIds = favoritesData.map(fav => fav.movieId);
+          setFavorites(favoriteIds);
+
+          const mustWatchData = await getMustWatchMovies(authContext.userId);
+          const mustWatchIds = mustWatchData.map(mw => mw.movieId);
+          setMustWatch(mustWatchIds);
+        } catch (error) {
+          console.error("Error loading user data:", error);
+        }
+      }
+    };
+    loadUserData();
+  }, [authContext.userId]);
 
   const addToFavorites = async (movie) => {
     if (!authContext.userId) return;
