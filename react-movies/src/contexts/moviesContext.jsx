@@ -1,5 +1,5 @@
 import React, { useState, useContext } from "react";
-import { addFavorite, removeFavorite } from "../api/tmdb-api";
+import { addFavorite, removeFavorite, addMustWatch, removeMustWatch } from "../api/tmdb-api";
 import { AuthContext } from "./authContext";
 
 export const MoviesContext = React.createContext(null);
@@ -47,16 +47,36 @@ const MoviesContextProvider = (props) => {
   };
   //console.log(myReviews);
 
-  const addToMustWatch = (movie) => {
-    let newMustWatch = [];
-    if (!mustWatch.includes(movie.id)){
-      newMustWatch = [...mustWatch, movie.id];
+  const addToMustWatch = async (movie) => {
+    if (!authContext.userId) return;
+    
+    try {
+      await addMustWatch(authContext.userId, movie);
+      let newMustWatch = [];
+      if (!mustWatch.includes(movie.id)){
+        newMustWatch = [...mustWatch, movie.id];
+      }
+      else{
+        newMustWatch = [...mustWatch];
+      }
+      setMustWatch(newMustWatch);
+      console.log("Must Watch list:", newMustWatch);
+    } catch (error) {
+      console.error("Error adding to must watch:", error);
     }
-    else{
-      newMustWatch = [...mustWatch];
+  };
+
+  const removeFromMustWatch = async (movie) => {
+    if (!authContext.userId) return;
+    
+    try {
+      await removeMustWatch(authContext.userId, movie.id);
+      setMustWatch( mustWatch.filter(
+        (mId) => mId !== movie.id
+      ));
+    } catch (error) {
+      console.error("Error removing from must watch:", error);
     }
-    setMustWatch(newMustWatch);
-    console.log("Must Watch list:", newMustWatch);
   };
 
   return (
@@ -68,6 +88,7 @@ const MoviesContextProvider = (props) => {
         addReview,
         mustWatch,
         addToMustWatch,
+        removeFromMustWatch,
       }}
     >
       {props.children}

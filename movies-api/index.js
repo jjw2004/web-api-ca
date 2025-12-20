@@ -6,6 +6,7 @@ import usersRouter from './api/users';
 import moviesRouter from './api/movies';
 import personsRouter from './api/persons';
 import favoritesRouter from './api/favorites';
+import mustWatchRouter from './api/mustwatch';
 import authenticate from './authenticate';
 
 dotenv.config();
@@ -39,6 +40,9 @@ app.use('/api/persons', personsRouter);
 
 //Favorites router
 app.use('/api/favorites', favoritesRouter);
+
+//Must Watch router
+app.use('/api/mustwatch', mustWatchRouter);
 
 app.use(errHandler);
 

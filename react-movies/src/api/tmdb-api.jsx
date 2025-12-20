@@ -306,3 +306,48 @@ export const removeFavorite = async (userId, movieId) => {
     }
     return await response.json();
 }
+
+export const getMustWatchMovies = async (userId) => {
+    const response = await fetch(
+        `http://localhost:8080/api/mustwatch/${userId}`
+    ); 
+    if (!response.ok) {
+        throw new Error(response.json().message);
+    }
+
+    return await response.json();
+}
+
+export const addMustWatch = async (userId, movie) => {
+    const response = await fetch(
+        `http://localhost:8080/api/mustwatch/${userId}`,
+        {
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            method: 'POST',
+            body: JSON.stringify({
+                movieId: movie.id,
+                movieTitle: movie.title,
+                moviePoster: movie.poster_path
+            })
+        }
+    );
+    if (!response.ok) {
+        throw new Error(response.json().message);
+    }
+    return await response.json();
+}
+
+export const removeMustWatch = async (userId, movieId) => {
+    const response = await fetch(
+        `http://localhost:8080/api/mustwatch/${userId}/${movieId}`,
+        {
+            method: 'DELETE'
+        }
+    );
+    if (!response.ok) {
+        throw new Error(response.json().message);
+    }
+    return await response.json();
+}
