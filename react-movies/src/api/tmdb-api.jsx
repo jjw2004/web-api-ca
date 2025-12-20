@@ -261,3 +261,48 @@ export const signup = async (username, password) => {
     });
     return response.json();
 };
+
+export const getFavoriteMovies = async (userId) => {
+    const response = await fetch(
+        `http://localhost:8080/api/favorites/${userId}`
+    ); 
+    if (!response.ok) {
+        throw new Error(response.json().message);
+    }
+
+    return await response.json();
+}
+
+export const addFavorite = async (userId, movie) => {
+    const response = await fetch(
+        `http://localhost:8080/api/favorites/${userId}`,
+        {
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            method: 'POST',
+            body: JSON.stringify({
+                movieId: movie.id,
+                movieTitle: movie.title,
+                moviePoster: movie.poster_path
+            })
+        }
+    );
+    if (!response.ok) {
+        throw new Error(response.json().message);
+    }
+    return await response.json();
+}
+
+export const removeFavorite = async (userId, movieId) => {
+    const response = await fetch(
+        `http://localhost:8080/api/favorites/${userId}/${movieId}`,
+        {
+            method: 'DELETE'
+        }
+    );
+    if (!response.ok) {
+        throw new Error(response.json().message);
+    }
+    return await response.json();
+}
