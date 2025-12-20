@@ -8,6 +8,7 @@ const AuthContextProvider = (props) => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [authToken, setAuthToken] = useState(existingToken); //eslint-disable-line
   const [userName, setUserName] = useState("");
+  const [userId, setUserId] = useState(null);
 
   //Function to put JWT token in local storage.
   const setToken = (data) => {
@@ -21,6 +22,7 @@ const AuthContextProvider = (props) => {
       setToken(result.token)
       setIsAuthenticated(true);
       setUserName(username);
+      setUserId(result.userId);
     }
   };
 
@@ -40,7 +42,8 @@ const AuthContextProvider = (props) => {
         authenticate,
         register,
         signout,
-        userName
+        userName,
+        userId
       }}
     >
       {props.children} {/* eslint-disable-line */}
